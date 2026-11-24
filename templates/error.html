@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}{{ error.code }} — Roastery{% endblock %}
+{% block content %}
+<div class="wrap auth">
+    <div class="form-card">
+        <h1>{{ error.code }}</h1>
+        <p>{% if error.code == 403 %}Ця сторінка лише для адміністраторів.{% else %}Такої сторінки не існує.{% endif %}</p>
+        <a class="btn" href="{{ url_for('home') }}">На головну</a>
+    </div>
+</div>
+{% endblock %}

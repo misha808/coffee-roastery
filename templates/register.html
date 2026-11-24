@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Реєстрація — Roastery{% endblock %}
+{% block content %}
+<div class="wrap auth">
+    <form class="form-card" method="post">
+        <h1>Реєстрація</h1>
+        <div><label for="username">Логін</label><input id="username" name="username" value="{{ username }}" minlength="3" maxlength="30" autocomplete="username" required autofocus></div>
+        <div><label for="password">Пароль</label><input id="password" type="password" name="password" minlength="6" autocomplete="new-password" required></div>
+        <div><label for="confirm">Повторіть пароль</label><input id="confirm" type="password" name="confirm" minlength="6" autocomplete="new-password" required></div>
+        <button class="btn" type="submit">Створити акаунт</button>
+        <p class="hint">Вже є акаунт? <a href="{{ url_for('auth.login') }}">Увійти</a></p>
+    </form>
+</div>
+{% endblock %}

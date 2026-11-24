@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Вхід — Roastery{% endblock %}
+{% block content %}
+<div class="wrap auth">
+    <form class="form-card" method="post">
+        <h1>Вхід</h1>
+        <p class="hint">Увійдіть, щоб купувати каву та залишати відгуки.</p>
+        <div><label for="username">Логін</label><input id="username" name="username" value="{{ username }}" autocomplete="username" required autofocus></div>
+        <div><label for="password">Пароль</label><input id="password" type="password" name="password" autocomplete="current-password" required></div>
+        <button class="btn" type="submit">Увійти</button>
+        <p class="hint">Немає акаунта? <a href="{{ url_for('auth.register') }}">Зареєструйтесь</a></p>
+    </form>
+</div>
+{% endblock %}
