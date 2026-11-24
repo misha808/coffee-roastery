@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import status_badge %}
+{% block title %}Замовлення №{{ order.id }} — Roastery{% endblock %}
+{% block content %}
+<div class="wrap narrow">
+    <h1 class="page-title">Замовлення №{{ order.id }} {{ status_badge(order.status) }}</h1>
+    <div class="panel">
+        <p class="muted">{{ order.date }} · {{ order.username }}<br>Доставка: {{ order.address }}</p>
+        <div class="table-scroll"><table>
+            <thead><tr><th>Товар</th><th class="num">Ціна</th><th class="num">К-сть</th><th class="num">Разом</th></tr></thead>
+            <tbody>
+            {% for i in items %}
+            <tr><td>{{ i.name }}</td><td class="num">{{ i.unit_price|money }}</td><td class="num">{{ i.quantity }}</td>
+                <td class="num">{{ (i.unit_price * i.quantity)|money }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div>
+        {% if order.promo_code %}<p class="muted">Промокод {{ order.promo_code }}: знижка {{ order.discount_percent }}%</p>{% endif %}
+        <p class="big-total">До сплати: {{ order.total_price|money }}</p>
+    </div>
+    <p><a href="{{ url_for('shop.orders') }}">← Усі мої замовлення</a></p>
+</div>
+{% endblock %}

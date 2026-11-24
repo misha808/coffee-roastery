@@ -1,0 +1,37 @@
+{# Спільні фрагменти для шаблонів #}
+
+{% macro status_badge(status) %}
+<span class="badge {% if status == 'Нове' %}s-new{% elif status == 'Оплачено' %}s-paid{% elif status == 'В обробці' %}s-work{% elif status == 'Відправлено' %}s-sent{% elif status == 'Доставлено' %}s-done{% else %}s-cancel{% endif %}">{{ status }}</span>
+{% endmacro %}
+
+{% macro product_card(p, next_url='') %}
+<li class="product" style="--c: {{ p.roast_color }}">
+    <div class="bar"></div>
+    <div class="body">
+        <h3>{{ p.name }}</h3>
+        <span class="meta"><span class="dot"></span>{{ p.roast_name }} обсмаження</span>
+        {% if p.description %}<p class="desc">{{ p.description }}</p>{% endif %}
+        <div class="buy">
+            <span class="price">{{ '%g'|format(p.price) }} грн <small>/ 250 г</small></span>
+            <form action="{{ url_for('shop.add_to_cart', product_id=p.id) }}" method="post">
+                <input type="hidden" name="next" value="{{ next_url }}">
+                <button class="btn small" type="submit">У кошик</button>
+            </form>
+        </div>
+    </div>
+</li>
+{% endmacro %}
+
+{% macro roast_scale(roasts, active=None) %}
+<nav class="scale" aria-label="Обсмаження">
+    <a class="all {{ 'active' if not active }}" href="{{ url_for('shop.shop') }}">Усі<small>всі сорти</small></a>
+    {% for r in roasts %}
+    <a class="{{ 'active' if active == r.id }}" style="--c: {{ r.color }}; --on: {{ r.color|ink_on }}"
+       href="{{ url_for('shop.shop', roast=r.id) }}">{{ r.name }}<small>{{ r.products_count }} сортів</small></a>
+    {% endfor %}
+</nav>
+{% endmacro %}
+
+{% macro review(r) %}
+<figure class="review"><p>{{ r.message }}</p><cite>{{ r.username }} · {{ r.created_at[:10] }}</cite></figure>
+{% endmacro %}

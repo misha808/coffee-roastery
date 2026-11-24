@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import status_badge %}
+{% block title %}Мої замовлення — Roastery{% endblock %}
+{% block content %}
+<div class="wrap">
+    <h1 class="page-title">Мої замовлення</h1>
+    {% if orders %}
+    <div class="panel flush table-scroll"><table>
+        <thead><tr><th>№</th><th>Дата</th><th>Товари</th><th class="num">Сума</th><th>Статус</th><th></th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td>#{{ o.id }}</td><td>{{ o.date[:10] }}</td><td class="muted">{{ o['items'] }}</td>
+            <td class="num">{{ o.total_price|money }}</td><td>{{ status_badge(o.status) }}</td>
+            <td class="num"><a href="{{ url_for('shop.order_details', order_id=o.id) }}">Деталі</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty">Ви ще нічого не замовляли. <a href="{{ url_for('shop.shop') }}">Перейти до каталогу</a>.</div>
+    {% endif %}
+</div>
+{% endblock %}

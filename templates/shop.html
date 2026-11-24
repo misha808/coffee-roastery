@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import product_card, roast_scale %}
+{% block title %}Каталог — Roastery{% endblock %}
+{% block content %}
+<div class="wrap">
+    <h1 class="page-title">Каталог кави</h1>
+    {{ roast_scale(roasts, roast_id) }}
+
+    <form class="toolbar" method="get" action="{{ url_for('shop.shop') }}">
+        <div class="grow"><label for="q">Пошук</label>
+            <input id="q" type="search" name="q" value="{{ q }}" placeholder="Назва або смак: шоколад, цитрус…"></div>
+        <div><label for="roast">Обсмаження</label>
+            <select id="roast" name="roast">
+                <option value="">Усі</option>
+                {% for r in roasts %}<option value="{{ r.id }}" {{ 'selected' if roast_id == r.id }}>{{ r.name }}</option>{% endfor %}
+            </select></div>
+        <div><label for="sort">Сортування</label>
+            <select id="sort" name="sort">
+                <option value="new" {{ 'selected' if sort == 'new' }}>Спочатку нові</option>
+                <option value="price_asc" {{ 'selected' if sort == 'price_asc' }}>Від дешевших</option>
+                <option value="price_desc" {{ 'selected' if sort == 'price_desc' }}>Від дорожчих</option>
+                <option value="name" {{ 'selected' if sort == 'name' }}>За назвою</option>
+            </select></div>
+        <button class="btn" type="submit">Знайти</button>
+        {% if q or roast_id or sort != 'new' %}<a class="btn ghost" href="{{ url_for('shop.shop') }}">Скинути</a>{% endif %}
+    </form>
+
+    <ul class="grid">
+        {% for p in products %}{{ product_card(p, request.full_path.rstrip('?')) }}
+        {% else %}<li class="empty" style="grid-column:1/-1">Нічого не знайдено. Спробуйте змінити пошук або скинути фільтри.</li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}

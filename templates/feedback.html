@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import review %}
+{% block title %}Відгуки — Roastery{% endblock %}
+{% block content %}
+<div class="wrap">
+    <h1 class="page-title">Відгуки клієнтів</h1>
+    <div class="reviews">
+        <div>
+            {% for r in reviews %}{{ review(r) }}
+            {% else %}<div class="empty">Відгуків ще немає. Напишіть перший.</div>{% endfor %}
+        </div>
+        <div>
+        {% if username %}
+            <form class="form-card" action="{{ url_for('feedback.add_feedback') }}" method="post">
+                <div><label for="message">Ваш відгук</label>
+                <textarea id="message" name="message" required minlength="3" maxlength="1000" placeholder="Що ви думаєте про нашу каву?"></textarea></div>
+                <button class="btn" type="submit">Надіслати відгук</button>
+            </form>
+        {% else %}
+            <div class="form-card">
+                <span>Щоб залишити відгук, увійдіть в акаунт.</span>
+                <a class="btn" href="{{ url_for('auth.login', next=url_for('feedback.feedback')) }}">Увійти</a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

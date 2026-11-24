@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import product_card, roast_scale, review %}
+{% block title %}Roastery — крафтова кава{% endblock %}
+{% block content %}
+<div class="wrap">
+    <section class="hero">
+        <h1>Кава, обсмажена малими партіями</h1>
+        <p>Оберіть обсмаження — від світлого й фруктового до темного й насиченого.</p>
+        {{ roast_scale(roasts) }}
+    </section>
+
+    <h2 class="section-title">Нові в каталозі</h2>
+    <ul class="grid">
+        {% for p in products %}{{ product_card(p, url_for('home')) }}
+        {% else %}<li class="empty" style="grid-column:1/-1">Каталог поки порожній.</li>{% endfor %}
+    </ul>
+    <p style="margin-top:20px"><a class="btn ghost" href="{{ url_for('shop.shop') }}">Увесь каталог</a></p>
+
+    <h2 class="section-title">Що кажуть клієнти</h2>
+    <div class="reviews-list">
+        {% for r in reviews %}{{ review(r) }}
+        {% else %}<div class="empty">Відгуків ще немає. <a href="{{ url_for('feedback.feedback') }}">Напишіть перший</a>.</div>{% endfor %}
+    </div>
+</div>
+{% endblock %}

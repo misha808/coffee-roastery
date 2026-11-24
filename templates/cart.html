@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Кошик — Roastery{% endblock %}
+{% block content %}
+<div class="wrap">
+    <h1 class="page-title">Кошик</h1>
+    {% if lines %}
+    <div class="cart-layout">
+        <div class="table-scroll panel flush"><table>
+            <thead><tr><th>Товар</th><th class="num">Ціна</th><th>Кількість</th><th class="num">Разом</th><th></th></tr></thead>
+            <tbody>
+            {% for line in lines %}
+            <tr>
+                <td><b>{{ line.product.name }}</b><br><span class="muted"><span class="dot" style="--c: {{ line.product.roast_color }}"></span>{{ line.product.roast_name }}</span></td>
+                <td class="num">{{ line.product.price|money }}</td>
+                <td>
+                    <form class="inline" action="{{ url_for('shop.update_cart', product_id=line.product.id) }}" method="post">
+                        <input class="qty" type="number" name="quantity" value="{{ line.quantity }}" min="0" max="{{ max_quantity }}" aria-label="Кількість: {{ line.product.name }}">
+                        <button class="btn ghost small" type="submit">Оновити</button>
+                    </form>
+                </td>
+                <td class="num">{{ line.subtotal|money }}</td>
+                <td class="num"><form action="{{ url_for('shop.remove_from_cart', product_id=line.product.id) }}" method="post">
+                    <button class="btn danger" type="submit">Прибрати</button></form></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table></div>
+
+        <aside class="panel summary">
+            <h2>Разом</h2>
+            <dl>
+                <div><dt>Сума</dt><dd>{{ subtotal|money }}</dd></div>
+                {% if promo %}<div><dt>Промокод {{ promo.code }} (−{{ promo.discount_percent }}%)</dt><dd>−{{ discount|money }}</dd></div>{% endif %}
+                <div class="total"><dt>До сплати</dt><dd>{{ total|money }}</dd></div>
+            </dl>
+
+            {% if promo %}
+            <form action="{{ url_for('shop.remove_promo') }}" method="post"><button class="link-btn" type="submit">Прибрати промокод</button></form>
+            {% else %}
+            <form class="inline" action="{{ url_for('shop.apply_promo') }}" method="post">
+                <input name="code" placeholder="Промокод" aria-label="Промокод" required>
+                <button class="btn ghost small" type="submit">Застосувати</button>
+            </form>
+            {% endif %}
+
+            <hr>
+            {% if username %}
+            <form action="{{ url_for('shop.checkout') }}" method="post" class="stack">
+                <div><label for="address">Адреса доставки</label>
+                <textarea id="address" name="address" required minlength="5" placeholder="Місто, вулиця, будинок"></textarea></div>
+                <button class="btn" type="submit">Оформити замовлення</button>
+            </form>
+            {% else %}
+            <p class="muted">Щоб оформити замовлення, увійдіть в акаунт.</p>
+            <a class="btn" href="{{ url_for('auth.login', next=url_for('shop.cart')) }}">Увійти</a>
+            {% endif %}
+        </aside>
+    </div>
+    {% else %}
+    <div class="empty">Кошик порожній. <a href="{{ url_for('shop.shop') }}">Оберіть каву в каталозі</a>.</div>
+    {% endif %}
+</div>
+{% endblock %}
