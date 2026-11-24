@@ -1,0 +1,27 @@
+{% extends 'admin/_layout.html' %}
+{% set active = 'roasts' %}
+{% block title %}Обсмаження — Адмін-панель{% endblock %}
+{% block heading %}Ступені обсмаження{% endblock %}
+{% block actions %}<a class="btn small" href="{{ url_for('admin.new_roast') }}">Додати обсмаження</a>{% endblock %}
+{% block body %}
+<section class="panel flush">
+    <div class="table-scroll"><table>
+        <thead><tr><th>Назва</th><th>Опис</th><th class="num">Товарів</th><th></th></tr></thead>
+        <tbody>
+        {% for r in roasts %}
+        <tr>
+            <td><span class="dot" style="--c: {{ r.color }}"></span><b>{{ r.name }}</b></td>
+            <td class="muted">{{ r.description }}</td>
+            <td class="num">{{ r.products_count }}</td>
+            <td class="num"><div class="inline end">
+                <a class="btn ghost small" href="{{ url_for('admin.edit_roast', roast_id=r.id) }}">Редагувати</a>
+                <form action="{{ url_for('admin.delete_roast', roast_id=r.id) }}" method="post" onsubmit="return confirm('Видалити обсмаження «{{ r.name }}»?')">
+                    <button class="btn danger" type="submit">Видалити</button></form>
+            </div></td>
+        </tr>
+        {% else %}<tr><td colspan="4" class="muted">Обсмажень немає.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

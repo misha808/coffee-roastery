@@ -1,0 +1,28 @@
+{% extends 'admin/_layout.html' %}
+{% set active = 'products' %}
+{% block title %}Товари — Адмін-панель{% endblock %}
+{% block heading %}Товари{% endblock %}
+{% block actions %}<a class="btn small" href="{{ url_for('admin.new_product') }}">Додати товар</a>{% endblock %}
+{% block body %}
+<section class="panel flush">
+    {% if products %}
+    <div class="table-scroll"><table>
+        <thead><tr><th>Назва</th><th>Обсмаження</th><th class="num">Ціна</th><th></th></tr></thead>
+        <tbody>
+        {% for p in products %}
+        <tr>
+            <td><b>{{ p.name }}</b><br><span class="muted">{{ p.description }}</span></td>
+            <td><span class="dot" style="--c: {{ p.roast_color }}"></span>{{ p.roast_name }}</td>
+            <td class="num">{{ p.price|money }}</td>
+            <td class="num"><div class="inline end">
+                <a class="btn ghost small" href="{{ url_for('admin.edit_product', product_id=p.id) }}">Редагувати</a>
+                <form action="{{ url_for('admin.delete_product', product_id=p.id) }}" method="post" onsubmit="return confirm('Видалити товар «{{ p.name }}»?')">
+                    <button class="btn danger" type="submit">Видалити</button></form>
+            </div></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}<p class="muted pad">Товарів немає. Додайте перший.</p>{% endif %}
+</section>
+{% endblock %}

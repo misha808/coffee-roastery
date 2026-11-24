@@ -1,0 +1,36 @@
+{% extends 'admin/_layout.html' %}
+{% from '_macros.html' import status_badge %}
+{% set active = 'orders' %}
+{% block title %}Замовлення — Адмін-панель{% endblock %}
+{% block heading %}Замовлення{% endblock %}
+{% block body %}
+<nav class="chips" aria-label="Фільтр за статусом">
+    <a href="{{ url_for('admin.orders') }}" class="{{ 'current' if not current }}">Усі</a>
+    {% for s in statuses %}<a href="{{ url_for('admin.orders', status=s) }}" class="{{ 'current' if current == s }}">{{ s }}</a>{% endfor %}
+</nav>
+<section class="panel flush">
+    {% if orders %}
+    <div class="table-scroll"><table>
+        <thead><tr><th>№</th><th>Клієнт</th><th>Товари</th><th class="num">Сума</th><th>Статус</th><th></th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td>#{{ o.id }}</td><td>{{ o.username }}</td><td class="muted">{{ o['items'] }}</td>
+            <td class="num">{{ o.total_price|money }}</td>
+            <td>
+                <form class="inline" action="{{ url_for('admin.update_order', order_id=o.id) }}" method="post">
+                    <input type="hidden" name="back" value="{{ request.full_path.rstrip('?') }}">
+                    <select name="status" aria-label="Статус замовлення №{{ o.id }}">
+                        {% for s in statuses %}<option value="{{ s }}" {{ 'selected' if o.status == s }}>{{ s }}</option>{% endfor %}
+                    </select>
+                    <button class="btn small" type="submit">Зберегти</button>
+                </form>
+            </td>
+            <td class="num"><a href="{{ url_for('admin.order_details', order_id=o.id) }}">Деталі</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}<p class="muted pad">Замовлень немає.</p>{% endif %}
+</section>
+{% endblock %}

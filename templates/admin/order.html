@@ -1,0 +1,32 @@
+{% extends 'admin/_layout.html' %}
+{% from '_macros.html' import status_badge %}
+{% set active = 'orders' %}
+{% block title %}Замовлення №{{ order.id }} — Адмін-панель{% endblock %}
+{% block heading %}Замовлення №{{ order.id }} {{ status_badge(order.status) }}{% endblock %}
+{% block actions %}<a class="btn ghost small" href="{{ url_for('admin.orders') }}">До списку</a>{% endblock %}
+{% block body %}
+<section class="panel">
+    <p class="muted">{{ order.date }} · клієнт <b>{{ order.username }}</b><br>Доставка: {{ order.address }}</p>
+    <div class="table-scroll"><table>
+        <thead><tr><th>Товар</th><th class="num">Ціна</th><th class="num">К-сть</th><th class="num">Разом</th></tr></thead>
+        <tbody>
+        {% for i in items %}
+        <tr><td>{{ i.name }}</td><td class="num">{{ i.unit_price|money }}</td><td class="num">{{ i.quantity }}</td><td class="num">{{ (i.unit_price * i.quantity)|money }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+    {% if order.promo_code %}<p class="muted">Промокод {{ order.promo_code }}: знижка {{ order.discount_percent }}%</p>{% endif %}
+    <p class="big-total">Разом: {{ order.total_price|money }}</p>
+</section>
+<section class="panel">
+    <h2>Керування</h2>
+    <form class="inline" action="{{ url_for('admin.update_order', order_id=order.id) }}" method="post">
+        <select name="status" aria-label="Статус">{% for s in statuses %}<option value="{{ s }}" {{ 'selected' if order.status == s }}>{{ s }}</option>{% endfor %}</select>
+        <button class="btn" type="submit">Змінити статус</button>
+    </form>
+    <form action="{{ url_for('admin.delete_order', order_id=order.id) }}" method="post" style="margin-top:16px"
+          onsubmit="return confirm('Видалити замовлення №{{ order.id }}?')">
+        <button class="btn danger" type="submit">Видалити замовлення</button>
+    </form>
+</section>
+{% endblock %}
