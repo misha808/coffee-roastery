@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="wrap">
+    <div class="admin-head"><h1>{% block heading %}Адмін-панель{% endblock %}</h1>{% block actions %}{% endblock %}</div>
+    <nav class="tabs" aria-label="Розділи адмін-панелі">
+        {% set sections = [('dashboard','Огляд'),('orders','Замовлення'),('products','Товари'),('roasts','Обсмаження'),('promos','Промокоди'),('feedback','Відгуки'),('users','Користувачі')] %}
+        {% for key, label in sections %}
+        <a href="{{ url_for('admin.' ~ key) }}" {% if active == key %}class="current" aria-current="page"{% endif %}>{{ label }}</a>
+        {% endfor %}
+    </nav>
+    {% block body %}{% endblock %}
+</div>
+{% endblock %}

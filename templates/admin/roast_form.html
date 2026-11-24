@@ -1,0 +1,13 @@
+{% extends 'admin/_layout.html' %}
+{% set active = 'roasts' %}
+{% block title %}{{ 'Нове обсмаження' if is_new else 'Редагування обсмаження' }} — Адмін-панель{% endblock %}
+{% block heading %}{{ 'Нове обсмаження' if is_new else 'Редагування обсмаження' }}{% endblock %}
+{% block body %}
+<form class="panel stack form-narrow" method="post">
+    <div><label for="name">Назва</label><input id="name" name="name" value="{{ roast.name }}" required autofocus></div>
+    <div><label for="description">Опис</label><textarea id="description" name="description">{{ roast.description }}</textarea></div>
+    <div><label for="color">Колір на сайті</label><input id="color" name="color" type="color" value="{{ roast.color }}" class="color-input"></div>
+    <div class="inline"><button class="btn" type="submit">{{ 'Додати' if is_new else 'Зберегти' }}</button>
+    <a class="btn ghost" href="{{ url_for('admin.roasts') }}">Скасувати</a></div>
+</form>
+{% endblock %}

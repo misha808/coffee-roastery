@@ -1,0 +1,30 @@
+{% extends 'admin/_layout.html' %}
+{% set active = 'users' %}
+{% block title %}Користувачі — Адмін-панель{% endblock %}
+{% block heading %}Користувачі{% endblock %}
+{% block body %}
+<section class="panel flush">
+    <div class="table-scroll"><table>
+        <thead><tr><th>Логін</th><th>Реєстрація</th><th class="num">Замовлень</th><th>Роль</th></tr></thead>
+        <tbody>
+        {% for u in users %}
+        <tr>
+            <td><b>{{ u.username }}</b></td><td class="muted">{{ u.created_at[:10] }}</td><td class="num">{{ u.orders_count }}</td>
+            <td>
+                {% if u.id == session['user_id'] %}<span class="badge s-sent">{{ u.role }} (це ви)</span>
+                {% else %}
+                <form class="inline" action="{{ url_for('admin.set_role', user_id=u.id) }}" method="post">
+                    <select name="role" aria-label="Роль {{ u.username }}">
+                        <option value="client" {{ 'selected' if u.role == 'client' }}>client</option>
+                        <option value="admin" {{ 'selected' if u.role == 'admin' }}>admin</option>
+                    </select>
+                    <button class="btn small" type="submit">Зберегти</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

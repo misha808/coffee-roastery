@@ -1,0 +1,29 @@
+{% extends 'admin/_layout.html' %}
+{% from '_macros.html' import status_badge %}
+{% set active = 'dashboard' %}
+{% block title %}Адмін-панель — Roastery{% endblock %}
+{% block body %}
+<div class="stats">
+    <div><b>{{ stats.new_orders }}</b><span>нових замовлень</span></div>
+    <div><b>{{ stats.orders }}</b><span>всього замовлень</span></div>
+    <div><b>{{ '%g'|format(stats.revenue) }} грн</b><span>виручка без скасованих</span></div>
+    <div><b>{{ stats.products }}</b><span>товарів</span></div>
+    <div><b>{{ stats.users }}</b><span>користувачів</span></div>
+    <div><b>{{ stats.feedback }}</b><span>відгуків</span></div>
+</div>
+<section class="panel">
+    <h2>Останні замовлення</h2>
+    {% if orders %}
+    <div class="table-scroll"><table>
+        <thead><tr><th>№</th><th>Клієнт</th><th class="num">Сума</th><th>Статус</th><th></th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+        <tr><td>#{{ o.id }}</td><td>{{ o.username }}</td><td class="num">{{ o.total_price|money }}</td>
+            <td>{{ status_badge(o.status) }}</td>
+            <td class="num"><a href="{{ url_for('admin.order_details', order_id=o.id) }}">Відкрити</a></td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}<p class="muted">Замовлень поки немає.</p>{% endif %}
+</section>
+{% endblock %}
