@@ -1,0 +1,285 @@
+newman
+
+Roastery API
+
+Folder 1. Автентифікація
+Sub-folder Реєстрація клієнта: успіх (201)
+  POST http://127.0.0.1:5000/api/v1/auth/register [201 CREATED, 455B, 226ms]
+  Pass  Статус 201
+  Pass  Відповідь у форматі JSON
+  Pass  Є токен і роль client
+
+Sub-folder Реєстрація: короткий пароль (400)
+  POST http://127.0.0.1:5000/api/v1/auth/register [400 BAD REQUEST, 396B, 4ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+  Pass  Помилки по обох полях
+
+Sub-folder Вхід адміністратора (200)
+  POST http://127.0.0.1:5000/api/v1/auth/login [200 OK, 415B, 180ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Роль admin
+
+Sub-folder Вхід: невірний пароль (401)
+  POST http://127.0.0.1:5000/api/v1/auth/login [401 UNAUTHORIZED, 259B, 186ms]
+  Pass  Статус 401
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Поточний користувач (200)
+  GET http://127.0.0.1:5000/api/v1/me [200 OK, 279B, 5ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Поточний користувач без токена (401)
+  GET http://127.0.0.1:5000/api/v1/me [401 UNAUTHORIZED, 303B, 3ms]
+  Pass  Статус 401
+  Pass  Відповідь у форматі JSON
+
+Folder 2. Товари
+Sub-folder Список товарів (200)
+  GET http://127.0.0.1:5000/api/v1/products [200 OK, 2.78kB, 4ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Масив із 12+ товарів
+
+Sub-folder Пошук «шоколад» (200)
+  GET http://127.0.0.1:5000/api/v1/products?q=шоколад [200 OK, 1.07kB, 4ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Знайдено товари
+
+Sub-folder Фільтр за обсмаженням і сортування (200)
+  GET http://127.0.0.1:5000/api/v1/products?roast=1&sort=price_desc [200 OK, 1.03kB, 5ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Ціни за спаданням
+
+Sub-folder Один товар (200)
+  GET http://127.0.0.1:5000/api/v1/products/1 [200 OK, 389B, 3ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  id = 1
+
+Sub-folder Неіснуючий товар (404)
+  GET http://127.0.0.1:5000/api/v1/products/9999 [404 NOT FOUND, 241B, 3ms]
+  Pass  Статус 404
+  Pass  Відповідь у форматі JSON
+  Pass  Є поле error
+
+Sub-folder Створити товар: успіх (201)
+  POST http://127.0.0.1:5000/api/v1/products [201 CREATED, 422B, 6ms]
+  Pass  Статус 201
+  Pass  Відповідь у форматі JSON
+  Pass  Є заголовок Location
+
+Sub-folder Створити товар: помилки валідації (400)
+  POST http://127.0.0.1:5000/api/v1/products [400 BAD REQUEST, 390B, 3ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+  Pass  details містить name і price
+
+Sub-folder Створити товар без токена (401)
+  POST http://127.0.0.1:5000/api/v1/products [401 UNAUTHORIZED, 303B, 3ms]
+  Pass  Статус 401
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Створити товар клієнтом (403)
+  POST http://127.0.0.1:5000/api/v1/products [403 FORBIDDEN, 275B, 5ms]
+  Pass  Статус 403
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Змінити ціну PATCH (200)
+  PATCH http://127.0.0.1:5000/api/v1/products/13 [200 OK, 386B, 5ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Ціна змінилась, назва та сама
+
+Sub-folder Замінити товар PUT (200)
+  PUT http://127.0.0.1:5000/api/v1/products/13 [200 OK, 399B, 7ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Видалити товар (204)
+  DELETE http://127.0.0.1:5000/api/v1/products/13 [204 NO CONTENT, 180B, 4ms]
+  Pass  Статус 204
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Видалити вдруге (404)
+  DELETE http://127.0.0.1:5000/api/v1/products/13 [404 NOT FOUND, 241B, 3ms]
+  Pass  Статус 404
+  Pass  Відповідь у форматі JSON
+
+Folder 3. Обсмаження
+Sub-folder Список обсмажень (200)
+  GET http://127.0.0.1:5000/api/v1/roasts [200 OK, 801B, 3ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Є 3+ обсмаження
+
+Sub-folder Створити обсмаження (201)
+  POST http://127.0.0.1:5000/api/v1/roasts [201 CREATED, 356B, 4ms]
+  Pass  Статус 201
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Дублікат назви (409)
+  POST http://127.0.0.1:5000/api/v1/roasts [409 CONFLICT, 255B, 2ms]
+  Pass  Статус 409
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Неправильний колір (400)
+  POST http://127.0.0.1:5000/api/v1/roasts [400 BAD REQUEST, 343B, 3ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Видалити обсмаження з товарами (409)
+  DELETE http://127.0.0.1:5000/api/v1/roasts/1 [409 CONFLICT, 310B, 3ms]
+  Pass  Статус 409
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Видалити створене обсмаження (204)
+  DELETE http://127.0.0.1:5000/api/v1/roasts/4 [204 NO CONTENT, 180B, 4ms]
+  Pass  Статус 204
+  Pass  Відповідь у форматі JSON
+
+Folder 4. Замовлення
+Sub-folder Оформити замовлення з промокодом (201)
+  POST http://127.0.0.1:5000/api/v1/orders [201 CREATED, 752B, 5ms]
+  Pass  Статус 201
+  Pass  Відповідь у форматі JSON
+  Pass  Знижка 10%, підсумок 1170
+  Pass  Статус «Нове»
+
+Sub-folder Замовлення: порожній кошик і невірний промокод (400)
+  POST http://127.0.0.1:5000/api/v1/orders [400 BAD REQUEST, 370B, 3ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+  Pass  Помилка по items
+
+Sub-folder Замовлення: неіснуючий товар (400)
+  POST http://127.0.0.1:5000/api/v1/orders [400 BAD REQUEST, 358B, 3ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Замовлення без токена (401)
+  POST http://127.0.0.1:5000/api/v1/orders [401 UNAUTHORIZED, 303B, 2ms]
+  Pass  Статус 401
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Мої замовлення (200)
+  GET http://127.0.0.1:5000/api/v1/orders [200 OK, 423B, 4ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Є хоча б одне
+
+Sub-folder Одне замовлення з позиціями (200)
+  GET http://127.0.0.1:5000/api/v1/orders/1 [200 OK, 719B, 3ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Є позиції
+
+Sub-folder Змінити статус клієнтом (403)
+  PATCH http://127.0.0.1:5000/api/v1/orders/1/status [403 FORBIDDEN, 275B, 3ms]
+  Pass  Статус 403
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Змінити статус адміністратором (200)
+  PATCH http://127.0.0.1:5000/api/v1/orders/1/status [200 OK, 727B, 6ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Статус «Оплачено»
+
+Sub-folder Невідомий статус (400)
+  PATCH http://127.0.0.1:5000/api/v1/orders/1/status [400 BAD REQUEST, 456B, 4ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Видалити замовлення (204)
+  DELETE http://127.0.0.1:5000/api/v1/orders/1 [204 NO CONTENT, 180B, 6ms]
+  Pass  Статус 204
+  Pass  Відповідь у форматі JSON
+
+Folder 5. Промокоди та відгуки
+Sub-folder Перевірити промокод (200)
+  GET http://127.0.0.1:5000/api/v1/promos/validate?code=coffee10 [200 OK, 264B, 3ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Знижка 10%
+
+Sub-folder Неіснуючий промокод (404)
+  GET http://127.0.0.1:5000/api/v1/promos/validate?code=nope [404 NOT FOUND, 247B, 2ms]
+  Pass  Статус 404
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Усі промокоди без прав (401)
+  GET http://127.0.0.1:5000/api/v1/promos [401 UNAUTHORIZED, 303B, 3ms]
+  Pass  Статус 401
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Залишити відгук (201)
+  POST http://127.0.0.1:5000/api/v1/feedback [201 CREATED, 392B, 4ms]
+  Pass  Статус 201
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Занадто короткий відгук (400)
+  POST http://127.0.0.1:5000/api/v1/feedback [400 BAD REQUEST, 342B, 4ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Список відгуків (200)
+  GET http://127.0.0.1:5000/api/v1/feedback [200 OK, 377B, 3ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+
+Sub-folder Видалити відгук адміністратором (204)
+  DELETE http://127.0.0.1:5000/api/v1/feedback/1 [204 NO CONTENT, 180B, 5ms]
+  Pass  Статус 204
+  Pass  Відповідь у форматі JSON
+
+Folder 6. API версії 2
+Sub-folder v2: товари з пагінацією (200)
+  GET http://127.0.0.1:5000/api/v2/products?per_page=5&page=2 [200 OK, 1.66kB, 6ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Конверт data + meta
+  Pass  Мета пагінації
+  Pass  Обсмаження вкладений об'єкт
+  Pass  Заголовок X-API-Version: 2
+
+Sub-folder v2: некоректна пагінація (400)
+  GET http://127.0.0.1:5000/api/v2/products?page=0&per_page=500 [400 BAD REQUEST, 487B, 4ms]
+  Pass  Статус 400
+  Pass  Відповідь у форматі JSON
+  Pass  Структурована помилка
+
+Sub-folder v2: неіснуючий товар (404)
+  GET http://127.0.0.1:5000/api/v2/products/9999 [404 NOT FOUND, 287B, 3ms]
+  Pass  Статус 404
+  Pass  Відповідь у форматі JSON
+  Pass  error.code = not_found
+
+Sub-folder v2: мої замовлення (200)
+  GET http://127.0.0.1:5000/api/v2/orders [200 OK, 285B, 4ms]
+  Pass  Статус 200
+  Pass  Відповідь у форматі JSON
+  Pass  Конверт data + meta
+
+------------------------------------------------------------------
+|                         |          executed |           failed |
+--------------------------+-------------------+-------------------
+|              iterations |                 1 |                0 |
+--------------------------+-------------------+-------------------
+|                requests |                46 |                0 |
+--------------------------+-------------------+-------------------
+|            test-scripts |                46 |                0 |
+--------------------------+-------------------+-------------------
+|      prerequest-scripts |                 1 |                0 |
+--------------------------+-------------------+-------------------
+|              assertions |               118 |                0 |
+------------------------------------------------------------------
+| total run duration: 1429ms                                     |
+------------------------------------------------------------------
+| total data received: 12.93kB (approx)                          |
+------------------------------------------------------------------
+| average response time: 16ms [min: 2ms, max: 226ms, s.d.: 48ms] |
+------------------------------------------------------------------
