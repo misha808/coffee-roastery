@@ -237,8 +237,9 @@ def get_roast(roast_id):
 def add_roast(name, description, color):
     db = get_db()
     with db:
-        db.execute('INSERT INTO roast_levels (name, description, color) VALUES (?, ?, ?)',
+        cur = db.execute('INSERT INTO roast_levels (name, description, color) VALUES (?, ?, ?)',
                    (name, description, color))
+    return cur.lastrowid
 
 
 def update_roast(roast_id, name, description, color):
@@ -295,8 +296,9 @@ def get_products_by_ids(ids):
 def add_product(name, description, price, roast_id):
     db = get_db()
     with db:
-        db.execute('INSERT INTO products (name, description, price, roast_id) VALUES (?, ?, ?, ?)',
+        cur = db.execute('INSERT INTO products (name, description, price, roast_id) VALUES (?, ?, ?, ?)',
                    (name, description, price, roast_id))
+    return cur.lastrowid
 
 
 def update_product(product_id, name, description, price, roast_id):
@@ -318,8 +320,9 @@ def delete_product(product_id):
 def add_feedback(user_id, message):
     db = get_db()
     with db:
-        db.execute('INSERT INTO feedback (user_id, message, created_at) VALUES (?, ?, ?)',
+        cur = db.execute('INSERT INTO feedback (user_id, message, created_at) VALUES (?, ?, ?)',
                    (user_id, message, now()))
+    return cur.lastrowid
 
 
 def get_feedback(limit=None):
@@ -355,8 +358,9 @@ def add_promo(code, discount_percent):
     """Кидає sqlite3.IntegrityError, якщо такий код уже є."""
     db = get_db()
     with db:
-        db.execute('INSERT INTO promo_codes (code, discount_percent) VALUES (?, ?)',
+        cur = db.execute('INSERT INTO promo_codes (code, discount_percent) VALUES (?, ?)',
                    (code.upper(), discount_percent))
+    return cur.lastrowid
 
 
 def toggle_promo(promo_id):
@@ -435,7 +439,7 @@ def get_order_details(order_id):
     db = get_db()
     order = db.execute(ORDER_SELECT + 'WHERE o.id = ?', (order_id,)).fetchone()
     items = db.execute(
-        'SELECT p.name, oi.quantity, oi.unit_price '
+        'SELECT oi.product_id, p.name, oi.quantity, oi.unit_price '
         'FROM order_items oi JOIN products p ON oi.product_id = p.id '
         'WHERE oi.order_id = ? ORDER BY oi.id',
         (order_id,),

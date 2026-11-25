@@ -2,12 +2,17 @@ import os
 import re
 from datetime import datetime
 
-from flask import Flask, render_template, session
+from flasgger import Swagger
+from flask import Flask, render_template, request, session
+from werkzeug.exceptions import HTTPException
 
 import models
-from routes import admin_bp, auth_bp, feedback_bp, shop_bp
+from routes import admin_bp, api_v1, api_v2, auth_bp, feedback_bp, shop_bp
+from routes.api.common import ApiError, handle_api_error, handle_http_error
+from routes.api.docs import SWAGGER_CONFIG, SWAGGER_TEMPLATE
 
 app = Flask(__name__)
+app.json.ensure_ascii = False  # кирилиця в JSON-відповідях читається як є, а не як \uXXXX
 # Шлях до файлу БД зберігаємо в конфігурації (поруч з app.py, незалежно від поточної теки)
 app.config['DATABASE'] = os.environ.get('DATABASE', os.path.join(app.root_path, 'db.sqlite'))
 # Ключ підписує сесію (кошик, вхід). Для реального сайту задайте власний через змінну середовища SECRET_KEY.
@@ -27,6 +32,14 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(feedback_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(shop_bp)
+app.register_blueprint(api_v1)  # REST API, версія 1: /api/v1/...
+app.register_blueprint(api_v2)  # REST API, версія 2: /api/v2/...
+
+# Документація API (Swagger UI): http://127.0.0.1:5000/apidocs/
+Swagger(app, config=SWAGGER_CONFIG, template=SWAGGER_TEMPLATE)
+
+# Помилки API віддаємо у форматі JSON
+app.register_error_handler(ApiError, handle_api_error)
 
 
 @app.template_filter('money')
@@ -65,10 +78,14 @@ def home():
     )
 
 
-@app.errorhandler(403)
-@app.errorhandler(404)
+@app.errorhandler(HTTPException)
 def error_page(error):
-    return render_template('error.html', error=error), error.code
+    """Для адрес /api/... — JSON, для сайту — HTML-сторінка помилки."""
+    if request.path.startswith('/api/'):
+        return handle_http_error(error)
+    if error.code in (403, 404):
+        return render_template('error.html', error=error), error.code
+    return error
 
 
 if __name__ == '__main__':
