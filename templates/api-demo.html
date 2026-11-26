@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Демонстрація API - Кав'ярня{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Управління асортиментом (API Demo)</h1>
+    <p>Ця сторінка взаємодіє з нашим REST API без перезавантаження.</p>
+
+    <div id="message" class="alert" style="display: none;"></div>
+    <div id="loading" class="alert alert-info" style="display: none;">⏳ Завантаження даних...</div>
+
+    <div class="card mb-4">
+        <div class="card-header">Додати новий продукт</div>
+        <div class="card-body">
+            <form id="addForm">
+                <div class="mb-3">
+                    <input type="text" id="productName" class="form-control" placeholder="Назва кави (напр. Ефіопія Yirgacheffe)" required>
+                </div>
+                <div class="mb-3">
+                    <input type="number" step="0.01" id="productPrice" class="form-control" placeholder="Ціна (₴)" required>
+                </div>
+                <div class="mb-3">
+                    <select id="productRoast" class="form-control" required>
+                        <option value="">Оберіть обсмаження...</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <textarea id="productDescription" class="form-control" placeholder="Опис смакового профілю..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Додати через API</button>
+            </form>
+        </div>
+    </div>
+
+    <h3>Асортимент з бази даних:</h3>
+    <div id="dataList" class="row"></div>
+</div>
+
+<style>
+    .item-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .item-price { color: #28a745; font-weight: bold; }
+</style>
+
+<script>window.API_TOKEN = {{ api_token|tojson }};</script>
+<script src="{{ url_for('static', filename='js/api-demo.js') }}"></script>
+{% endblock %}
