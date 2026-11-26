@@ -8,7 +8,7 @@ from werkzeug.exceptions import HTTPException
 
 import models
 from routes import admin_bp, api_v1, api_v2, auth_bp, feedback_bp, shop_bp
-from routes.api.common import ApiError, handle_api_error, handle_http_error
+from routes.api.common import ApiError, handle_api_error, handle_http_error, make_token
 from routes.api.docs import SWAGGER_CONFIG, SWAGGER_TEMPLATE
 
 app = Flask(__name__)
@@ -77,6 +77,14 @@ def home():
         reviews=models.get_feedback(limit=3),
     )
 
+
+
+@app.route('/api-demo')
+def api_demo():
+    # Для входу через сайт видаємо підписаний токен API: JavaScript надсилає його
+    # в заголовку Authorization, тож POST /api/v1/products лишається захищеним.
+    token = make_token(session['user_id']) if 'user_id' in session else None
+    return render_template('api-demo.html', api_token=token)
 
 @app.errorhandler(HTTPException)
 def error_page(error):
